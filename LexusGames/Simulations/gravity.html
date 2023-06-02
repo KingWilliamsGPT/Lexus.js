@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name='viewport' content="width=device-width, initial-scale=1.0">
+	<title>Gravity</title>
+
+	<link rel="stylesheet" type="text/css" href="./css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="./css/style.css">
+	<script type="text/javascript" src="./js/jquery.js"></script>
+	<style>
+		#drawCanvas{
+			position: absolute;
+			top:0;left:0;right:0;bottom:0;
+			background: black;
+			transform: translate(-50%);
+		}
+		.float-head{
+			position: absolute;
+			/*transform: translate(50%);*/
+			top: 0;
+			right: 0;
+			background: var(--white);
+			width: 50vw;
+			height: 100vh;
+			padding:0;
+			margin: 0;
+		}
+
+		.center{
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			display: flex;
+			flex-direction: column;
+			height: 50%;
+		}
+		.center span{
+			flex: 1;
+			text-align: center;
+			display: block!important;
+		}
+
+		.welcome{
+			font-weight: lighter;
+			font-size: 80px;
+			letter-spacing: 20px;
+			position: relative;
+		}
+
+		.welcome:before{
+			content: "";
+		    width: 50%;
+		    height: 94px;
+		    background: hsla(327, 50%, 79%, .1);
+		    display: block;
+		    position: absolute;
+		    bottom: 0;
+		    right: 0;
+		    animation: grow 2s forwards;
+		}
+
+		@keyframes grow{
+			from{
+				width: 100%;
+				transform: translateY(-50px);
+				height: 94px;
+			}
+			to{
+				transform: translateY(-40px);
+				width: 50%;
+				height: 4px;
+		    	background: hsla(327, 50%, 79%, 1);
+			}
+		}
+
+		.big{
+			font-size: 100px;
+			font-weight: bolder;
+		}
+
+		.to{
+			/*font-weight: bold;*/
+			padding-top: 50px;
+			font-size: 28px;
+		}
+	</style>
+</head>
+<body>
+	<div class="container-fluid">
+		<canvas id="drawCanvas" style=""></canvas>
+	</div>
+	<p class="float-head">
+		<span class="center">
+			<span class="welcome">Welcome</span>
+			<span class="to">to</span>
+			<span class="big">Canvas Labs</span>
+		</span>
+	</p>
+<script>
+	$(document).ready(()=>{
+		$('.welcome').bind('animationend', (e)=>console.log(e))
+	});
+	function randint(min, max) {
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	}
+
+	function * range(max){
+		for(var i=0; i<max; i++){
+			yield i;
+		}
+	}
+	function Ball(radius, cd){
+		this.r = randint(15,radius);
+		this.x = cd.x;
+		this.y = cd.y;
+		this.vx = 0;
+		this.vy = 5;
+		this.gravity = 1/randint(1,20);// 0.1;
+		var c = randint(0, 360);
+		this.color = `hsla(${randint(c,10)}, 50%, 60%, 1)`;
+
+		this.fall = function(){
+			this.y += this.vy;
+			this.x += this.vx;
+			this.vy += this.gravity;
+			this.vx += .1; //this.gravity;
+			if(this.x > canvas.width || this.x < 0){
+				this.vx *= -1;
+			}
+
+			if (this.y > canvas.height - radius){ // if ball hits the ground
+				this.y = canvas.height - radius; // reposition it at the ground
+				this.vy *= -0.8; // then reverse and reduce its vertical speed
+				this.gravity *= -1;
+			}
+			if(this.y < canvas.height - 35.5){
+				this.gravity = Math.abs(this.gravity);
+			}
+			if (this.x > canvas.width + this.radius){ // if ball goes beyond canvas
+				this.x = -this.radius;
+			}
+		}
+
+		this.draw = function(ctx){
+			// console.log('drawing')
+			// ctx.clearRect(0,0,canvas.width, canvas.height);
+
+			// ctx.fillRect(0,0,canvas.width, canvas.height);
+			ctx.fillStyle = 'lightgreen';
+			ctx.fillStyle = this.color;
+			// ctx.strokeStyle = 'pink';
+			ctx.beginPath();
+			ctx.arc(this.x, this.y, Math.abs(this.r), 0, Math.PI * 2, true);
+			ctx.closePath();
+			ctx.fill();
+			// ctx.fillStyle = 'white';
+			// ctx.font = '30px arial';
+			// ctx.fillText(`${this.y}`, this.x, this.y);
+			// ctx.stroke();
+			this.fall();
+		}
+	}// 119 100% 42% 1
+
+	function resizeCanvas(){
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+	}
+
+	function * getBalls(r){
+		for(var i of range(r)){
+			// console.log('creating ball');
+			yield new Ball(60, {x:randint(canvas.width/2, canvas.width), y:0});
+		}
+	}
+
+
+	var canvas = $('#drawCanvas')[0];
+	resizeCanvas();
+
+	ctx = canvas.getContext('2d');
+	balls = [...getBalls(100)];
+
+
+	function loop(){
+		ctx.fillStyle = 'rgba(0,12,0,.05)';
+		ctx.fillRect(0,0,canvas.width, canvas.height);
+		// ctx.clearRect(0,0,canvas.width, canvas.height);
+		for(var i=0; i<balls.length; i++){
+			var ball = balls[i];
+			ball.draw(ctx);
+		}
+		requestAnimationFrame(loop);
+	}
+
+	document.addEventListener('DOMContentLoaded', ()=>{
+		// if(this.running)
+		loop();
+	});
+
+	// bom event
+	window.addEventListener('resize', function(){
+		resizeCanvas();
+	});
+</script>
+</body>
+</html>

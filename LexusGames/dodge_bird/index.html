@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Dodge Bird</title>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" type="text/css" href="./assets/styles/bootstrap.css">
+    <link rel="shortcut icon" type="text/css" href="./bluebat\skeleton-animation_00.png">
+    <style>
+    	*{
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+
+		.container{
+			width: 100%;
+			height: 100vh;
+			display: flex;
+			background: linear-gradient(white, #eee);
+		}
+
+		#cnv {
+			margin: auto;
+			width: 800px;
+			height: 560px;
+			background: white;
+			box-shadow: 2px 3px 10px #eee;
+		}
+		.details{
+			font-family: monospace;
+			position: absolute;
+			top: 5%;
+			left: 50%;
+			transform: translateX(-50%);
+		}
+    </style>
+</head>
+<body>
+	<!-- <h1>G</h1> -->
+    <div class="container">
+	    <div class="details">
+	    	<h1>coins: <span id="life">0</span></h1>
+	    	<!-- <audio src="./audio/action.ogg" controls autoplay loop></audio> -->
+	    	<button id='startGame' class="btn btn-l btn-primary">start</button>
+	    	<button id='startGame' class="btn btn-l btn-danger" onclick="window.location.reload();">stop</button>
+	    </div>
+        <canvas id="cnv"></canvas>
+    </div>
+    <script src="lexus.js"></script>
+    <script src="main.js"></script>
+    <script>
+    </script>
+</body>
+</html>
