@@ -9,6 +9,8 @@ The following are examples of games built with **lexus.js**
 
 Dodge bird is an implementation of the classic flappy bird game.
 
+<iframe src="./LexusGames/dodge_bird/index.html" height="400"></iframe>
+
 <iframe src="" frameborder="0"></iframe>
 
 
